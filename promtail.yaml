@@ -1,0 +1,47 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+# - url: http://{loki_server}:3100/loki/api/v1/push
+scrape_configs:
+- job_name: system
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: varlogs
+      __path__: /var/log/*log
+- job_name: systemd-journal
+  journal:
+    labels:
+      job: systemd-journal
+  relabel_configs:
+    - source_labels: ['__journal__systemd_unit']
+      target_label: 'unit'    
+  pipeline_stages:
+  - match:
+      selector: '{job="systemd-journal"}'
+      stages:
+      - regex:
+          expression: ".*(?P<error_message>error*)"
+      - metrics:
+          error_total_journal:
+            type: Counter
+            description: "total count of errors"
+            source: error_message
+            config:
+              action: inc    
+- job_name: my-container-logs
+  static_configs:
+  - targets: # tells promtail to look for the logs on the current machine/host
+      - localhost
+    labels: # labels with which all the following logs should be labelled
+      job: my-container  # label-1
+      host: localhost    # label-2
+      __path__: /var/lib/docker/containers/{,*/}{*.log}
+EOF
