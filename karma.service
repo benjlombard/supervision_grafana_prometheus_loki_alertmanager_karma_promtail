@@ -1,0 +1,16 @@
+[Unit]
+Description=Karma Alertmanager dashboard
+Wants=network-online.target
+After=network-online.target
+After=alertmanager.service
+ 
+[Service]
+User=karma
+Group=karma
+Type=simple
+WorkingDirectory=/etc/karma/
+ExecStart=/usr/local/bin/karma \
+    --config.file=/etc/karma/karma.yml
+ 
+[Install]
+WantedBy=multi-user.target

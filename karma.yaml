@@ -1,0 +1,15 @@
+alertmanager:
+  interval: 1m
+  servers:
+    - name: alertmanager
+      uri: http://localhost:9093
+      timeout: 20s
+authentication:
+  basicAuth:
+    users:
+      - username: <username>
+        password: <password>
+listen:
+  address: 0.0.0.0
+  port: 8092
+  prefix: /karma/
