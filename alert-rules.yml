@@ -1,0 +1,11 @@
+groups:
+- name: alert-rules
+  rules:
+  - alert: ExporterDown
+    expr: up == 0
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      description: 'Metrics exporter service for {{ $labels.job }} running on {{ $labels.instance }} has been down for more than 5 minutes.'
+      summary: 'Exporter down (instance {{ $labels.instance }})'
