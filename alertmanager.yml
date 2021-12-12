@@ -1,0 +1,19 @@
+global:
+  smtp_from: 'AlertManager <alertmanager@example.com>'
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_hello: 'alertmanager'
+  smtp_auth_username: ''
+  smtp_auth_password: 'password'
+  smtp_require_tls: true
+ 
+route:
+  group_by: ['instance', 'alert']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: myteam
+ 
+receivers:
+  - name: 'myteam'
+    email_configs:
+      - to: 'user@example.com'
